@@ -1,25 +1,27 @@
 package speed.daemon.serverMessages;
 
+import speed.daemon.MessageTypes;
+import speed.daemon.codex.MessageEncoder;
+
 public class Error implements ServerMessage {
     private final String Message;
 
-    Error(ErrorTypes errorType) {
+    public Error(ErrorTypes errorType) {
         Message = errorType.Text;
     }
 
     @Override
-    public int[] encode() {
-        int[] encoded = new int[Message.length() + 1];
+    public byte[] encode() {
+        byte[] encoded = new byte[Message.length() + 2];
+        encoded[0] = MessageTypes.ERROR.getFlag();
 
-        encoded[0] = Message.length();
-        for (int i = 0; i < Message.length(); i++) {
-            encoded[i + 1] = Message.charAt(i);
-        }
+        byte[] encodedMessage = MessageEncoder.encodeString(Message);
+        System.arraycopy(encodedMessage, 0, encoded, 1, encodedMessage.length);
 
         return encoded;
     }
 
-    enum ErrorTypes {
+    public enum ErrorTypes {
         UNEXPECTED_MESSAGE_TYPE("The client began a message with an unexpected message type.");
 
         private final String Text;

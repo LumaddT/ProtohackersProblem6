@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 // TODO: the cameras and dispatchers set within the maps are not concurrent
 // and they are used with no synchronization in mind, hoping this will work on its own
-class Island {
+public class Island {
     private static final Logger logger = LogManager.getLogger();
 
     private final Map<Integer, Set<Camera>> Cameras = new ConcurrentHashMap<>();
@@ -38,23 +38,27 @@ class Island {
 
             int firstByte = inputStream.read();
 
-            MessageTypes messageType = MessageTypes.getType(firstByte);
+            if (firstByte == -1) {
+                throw new ExpectedMoreBytesException("EOF found when bytes were expected.");
+            }
+
+            MessageTypes messageType = MessageTypes.getType((byte) firstByte);
             switch (messageType) {
                 case I_AM_CAMERA -> {
-                    IAmCamera clientMessage = MessageDecoder.parseIAmCamera(inputStream);
-                    Limits.putIfAbsent(clientMessage.getRoad(), clientMessage.getLimit());
+                    IAmCamera iAmCameraMessage = MessageDecoder.parseIAmCamera(inputStream);
+                    Limits.putIfAbsent(iAmCameraMessage.getRoad(), iAmCameraMessage.getLimit());
 
-                    if (!Cameras.containsKey(clientMessage.getRoad())) {
-                        Cameras.put(clientMessage.getRoad(), new HashSet<>());
+                    if (!Cameras.containsKey(iAmCameraMessage.getRoad())) {
+                        Cameras.put(iAmCameraMessage.getRoad(), new HashSet<>());
                     }
 
-                    Cameras.get(clientMessage.getRoad()).add(new Camera(socket, clientMessage.getMile()));
+                    Cameras.get(iAmCameraMessage.getRoad()).add(new Camera(socket, inputStream, outputStream, iAmCameraMessage.getMile(), this));
                 }
                 case I_AM_DISPATCHER -> {
-                    IAmDispatcher clientMessage = MessageDecoder.parseIAmDispatcher(inputStream);
-                    Dispatcher newDispatcher = new Dispatcher(socket);
+                    IAmDispatcher iAmDispatcherMessage = MessageDecoder.parseIAmDispatcher(inputStream);
+                    Dispatcher newDispatcher = new Dispatcher(socket, inputStream, outputStream, this);
 
-                    for (int roadNumber : clientMessage.getRoads()) {
+                    for (int roadNumber : iAmDispatcherMessage.getRoads()) {
                         if (!Dispatchers.containsKey(roadNumber)) {
                             Dispatchers.put(roadNumber, new HashSet<>());
                         }
@@ -62,14 +66,16 @@ class Island {
                         Dispatchers.get(roadNumber).add(newDispatcher);
                     }
                 }
-                default ->
-                        throw new UnexpectedMessageTypeException("Expected I_AM_CAMERA or I_AM_DISPATCHER but found %s.".formatted(messageType.name()));
+                default -> {
+                    Error errorMessage = new Error(Error.ErrorTypes.UNEXPECTED_MESSAGE_TYPE);
+                    byte[] encodedErrorMessage = errorMessage.encode();
+                    socket.getOutputStream().write(encodedErrorMessage, 0, encodedErrorMessage.length);
+
+                    throw new UnexpectedMessageTypeException("Expected I_AM_CAMERA or I_AM_DISPATCHER but found %s.".formatted(messageType.name()));
+                }
             }
-        } catch (UnexpectedMessageTypeException e) {
-            Error errorMessage = new Error(Error.ErrorTypes.UNEXPECTED_MESSAGE_TYPE);
-            int[] encodedErrorMessage = errorMessage.encode();
-            socket.getOutputStream().write(encodedErrorMessage, 0, encodedErrorMessage.length);
-        } catch (ExpectedMoreBytesException e) {
+        } catch (UnexpectedMessageTypeException | ExpectedMoreBytesException e) {
+            logger.debug(e.getMessage());
         } catch (IOException e) {
             logger.error("An IO exception was thrown while reading the first byte of an incoming connection.\n{}\n{}", e.getMessage(), e.getStackTrace());
             try {
