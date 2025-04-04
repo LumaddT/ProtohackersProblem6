@@ -52,7 +52,8 @@ public class Error implements ServerMessage {
     public enum ErrorTypes {
         UNEXPECTED_MESSAGE_TYPE("The client began a message with an unexpected message type."),
         EXPECTED_MORE_BYTES("The client sent an EOF before finishing a complete message."),
-        DOUBLE_HEARTBEAT_ERROR("The client send a WantHeartbeat message, but heartbeat is already being send.");
+        DOUBLE_HEARTBEAT_ERROR("The client send a WantHeartbeat message, but heartbeat is already being send."),
+        DIFFERENT_LIMIT_ERROR("The client Camera sent a limit for a road different from the one already recorded.");
 
         private final String ErrorMessage;
 
