@@ -3,41 +3,48 @@ package speed.daemon;
 import lombok.RequiredArgsConstructor;
 import speed.daemon.serverMessages.Ticket;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 @RequiredArgsConstructor
 public class Car {
     private static final double LIMIT_TOLERANCE = 0.5;
 
     private final String PlateNumber;
-    private final Map<Integer, Map<Long, Integer>> Pictures = new ConcurrentHashMap<>();
+    private final Map<Integer, Map<Long, Integer>> Sightnings = new HashMap<>();
     private final Set<Long> DaysTicketed = new HashSet<>();
+    private final Lock Lock = new ReentrantLock();
 
-    public Ticket addPicture(long timestamp, int road, int mile, int limit) {
-        if (!Pictures.containsKey(road)) {
-            Pictures.put(road, new ConcurrentHashMap<>());
-        }
-
-        Ticket ticket = checkForTicket(timestamp, road, mile, limit);
-
-        Pictures.get(road).put(timestamp, mile);
-
-        return ticket;
+    public void lock() {
+        Lock.lock();
     }
 
-    private Ticket checkForTicket(long timestamp, int road, int mile, int limit) {
+    public void unlock() {
+        Lock.unlock();
+    }
+
+    public void addSighting(long timestamp, int road, int mile) {
+        if (!Sightnings.containsKey(road)) {
+            Sightnings.put(road, new HashMap<>());
+        }
+
+        Sightnings.get(road).put(timestamp, mile);
+    }
+
+    public Ticket checkForTicket(long timestamp, int road, int mile, int limit) {
         Set<Ticket> potentialTickets = new HashSet<>();
 
-        Map<Long, Integer> roadPictures = Pictures.get(road);
+        Map<Long, Integer> roadSightings = Sightnings.get(road);
 
-        for (long pictureTimestamp : roadPictures.keySet()) {
+        for (long pictureTimestamp : roadSightings.keySet()) {
             long deltaTimeSeconds = Math.abs(timestamp - pictureTimestamp);
             double deltaTimeHours = ((double) deltaTimeSeconds) / 3_600;
 
-            int deltaDistance = Math.abs(mile - roadPictures.get(pictureTimestamp));
+            int deltaDistance = Math.abs(mile - roadSightings.get(pictureTimestamp));
 
             double averageSpeed = ((double) deltaDistance) / deltaTimeHours;
 
@@ -45,9 +52,9 @@ public class Car {
                 potentialTickets.add(Ticket.builder()
                         .Plate(this.PlateNumber)
                         .Road(road)
-                        .Mile1(timestamp < pictureTimestamp ? mile : roadPictures.get(pictureTimestamp))
+                        .Mile1(timestamp < pictureTimestamp ? mile : roadSightings.get(pictureTimestamp))
                         .Timestamp1(Math.min(timestamp, pictureTimestamp))
-                        .Mile2(timestamp > pictureTimestamp ? mile : roadPictures.get(pictureTimestamp))
+                        .Mile2(timestamp > pictureTimestamp ? mile : roadSightings.get(pictureTimestamp))
                         .Timestamp2(Math.max(timestamp, pictureTimestamp))
                         .Speed((int) (averageSpeed * 100))
                         .build());

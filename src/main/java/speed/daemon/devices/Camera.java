@@ -1,9 +1,9 @@
 package speed.daemon.devices;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import speed.daemon.IslandManager;
 import speed.daemon.MessageTypes;
 import speed.daemon.clientMessages.ClientMessage;
 import speed.daemon.clientMessages.IAmCamera;
@@ -44,6 +44,8 @@ public class Camera {
         }
 
         Plate plate = (Plate) clientMessage;
+
+        IslandManager.reportPlate(plate, Road, Mile);
 
         // TODO
     }

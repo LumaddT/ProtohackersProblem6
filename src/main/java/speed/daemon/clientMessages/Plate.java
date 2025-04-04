@@ -11,6 +11,6 @@ import speed.daemon.MessageTypes;
 public class Plate implements ClientMessage {
     private final MessageTypes MessageType = MessageTypes.PLATE;
 
-    private final String Plate;
+    private final String PlateNumber;
     private final long Timestamp; // Necessary since there is no unsigned int
 }
