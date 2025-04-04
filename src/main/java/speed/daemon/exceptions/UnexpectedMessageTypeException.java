@@ -1,8 +1,6 @@
 package speed.daemon.exceptions;
 
-import java.io.IOException;
-
-public class UnexpectedMessageTypeException extends IOException {
+public class UnexpectedMessageTypeException extends Exception {
     public UnexpectedMessageTypeException(String message) {
         super(message);
     }

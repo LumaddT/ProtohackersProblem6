@@ -22,7 +22,7 @@ public class SpeedDaemon {
         }
 
         Running = true;
-        Island island = new Island();
+        InitialHandler initialHandler = new InitialHandler();
 
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             logger.info("Started on port {}.", port);
@@ -32,13 +32,13 @@ public class SpeedDaemon {
             while (Running) {
                 try {
                     Socket socket = serverSocket.accept();
-                    new Thread(() -> island.manageSocket(socket)).start();
+                    new Thread(() -> initialHandler.manageSocket(socket)).start();
                 } catch (SocketTimeoutException e) {
                     logger.trace("Socket timed out (timeout: {}) in thread {}.", TIMEOUT, Thread.currentThread().toString());
                 }
             }
 
-            island.disconnectAll();
+            initialHandler.disconnectAll();
         } catch (IOException e) {
             logger.fatal("An IO exception was thrown by the SocketServer. No attempt will be made to reopen the socket.\n{}\n{}", e.getMessage(), e.getStackTrace());
         }

@@ -3,29 +3,35 @@ package speed.daemon.devices;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import speed.daemon.Island;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.Socket;
+import speed.daemon.clientMessages.ClientMessage;
+import speed.daemon.clientMessages.Plate;
+import speed.daemon.codex.SocketHolder;
+import speed.daemon.exceptions.SocketIsDeadException;
 
 @RequiredArgsConstructor
 public class Camera {
     private static final Logger logger = LogManager.getLogger();
 
-    private final Socket Socket;
-    private final InputStream InputStream;
-    private final OutputStream OutputStream;
+    private final SocketHolder SocketHolder;
+    private final int Road;
     private final int Mile;
-    private final Island ParentIsland;
 
-    public void disconnect() {
+    public void run() {
+        ClientMessage clientMessage = null;
         try {
-            Socket.close();
-        } catch (IOException e) {
-            logger.error("An IO exception was thrown while closing a Camera socket.\n{}\n{}", e.getMessage(), e.getStackTrace());
+            clientMessage = SocketHolder.getNextClientMessage();
+        } catch (SocketIsDeadException e) {
+            this.disconnect();
         }
+
+        Plate plate = (Plate) clientMessage;
+
+        // TODO
     }
 
+    public void disconnect() {
+        SocketHolder.close();
+
+        // TODO: clean from objects holder
+    }
 }

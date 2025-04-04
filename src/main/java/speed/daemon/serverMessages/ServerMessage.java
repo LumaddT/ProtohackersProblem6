@@ -1,5 +1,10 @@
 package speed.daemon.serverMessages;
 
+import speed.daemon.exceptions.ImpossibleEncodingException;
+
 public interface ServerMessage {
-    byte[] encode();
+    byte[] encode() throws ImpossibleEncodingException;
+
+    @Override
+    String toString();
 }
