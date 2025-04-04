@@ -15,7 +15,7 @@ public class Car {
     private static final double LIMIT_TOLERANCE = 0.5;
 
     private final String PlateNumber;
-    private final Map<Integer, Map<Long, Integer>> Sightnings = new HashMap<>();
+    private final Map<Integer, Map<Long, Integer>> Sightings = new HashMap<>();
     private final Set<Long> DaysTicketed = new HashSet<>();
     private final Lock Lock = new ReentrantLock();
 
@@ -28,17 +28,17 @@ public class Car {
     }
 
     public void addSighting(long timestamp, int road, int mile) {
-        if (!Sightnings.containsKey(road)) {
-            Sightnings.put(road, new HashMap<>());
+        if (!Sightings.containsKey(road)) {
+            Sightings.put(road, new HashMap<>());
         }
 
-        Sightnings.get(road).put(timestamp, mile);
+        Sightings.get(road).put(timestamp, mile);
     }
 
     public Ticket checkForTicket(long timestamp, int road, int mile, int limit) {
         Set<Ticket> potentialTickets = new HashSet<>();
 
-        Map<Long, Integer> roadSightings = Sightnings.get(road);
+        Map<Long, Integer> roadSightings = Sightings.get(road);
 
         for (long pictureTimestamp : roadSightings.keySet()) {
             long deltaTimeSeconds = Math.abs(timestamp - pictureTimestamp);

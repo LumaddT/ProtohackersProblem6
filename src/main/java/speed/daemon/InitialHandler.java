@@ -3,18 +3,9 @@ package speed.daemon;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import speed.daemon.clientMessages.ClientMessage;
-import speed.daemon.clientMessages.IAmCamera;
-import speed.daemon.clientMessages.IAmDispatcher;
 import speed.daemon.codex.SocketHolder;
-import speed.daemon.devices.Camera;
-import speed.daemon.devices.Dispatcher;
 
 import java.net.Socket;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 // TODO: the cameras and dispatchers set within the maps are not concurrent
 // and they are used with no synchronization in mind, hoping this will work on its own

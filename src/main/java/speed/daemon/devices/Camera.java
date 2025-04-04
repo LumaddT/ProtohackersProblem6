@@ -36,18 +36,21 @@ public class Camera {
     }
 
     public void run() {
-        ClientMessage clientMessage = null;
-        try {
-            clientMessage = SocketHolder.getNextClientMessage();
-        } catch (SocketIsDeadException e) {
-            this.disconnect();
+        while (true) {
+            ClientMessage clientMessage;
+            try {
+                clientMessage = SocketHolder.getNextClientMessage();
+            } catch (SocketIsDeadException e) {
+                this.disconnect();
+                return;
+            }
+
+            Plate plate = (Plate) clientMessage;
+
+            logger.debug("Received plate \"{}\", Road: {}, Mile: {}", plate.toString(), Road, Mile);
+
+            IslandManager.reportPlate(plate, Road, Mile);
         }
-
-        Plate plate = (Plate) clientMessage;
-
-        IslandManager.reportPlate(plate, Road, Mile);
-
-        // TODO
     }
 
     public void sendError(Error.ErrorTypes errorType) {
