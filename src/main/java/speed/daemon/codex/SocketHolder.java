@@ -141,12 +141,11 @@ public class SocketHolder {
     public ClientMessage getNextClientMessage() throws SocketIsDeadException {
         while (true) {
             try {
-                return MessageQueue.poll(1, TimeUnit.SECONDS);
-            } catch (InterruptedException e) {
-                if (isConnectionAlive()) {
-                    continue;
+                ClientMessage clientMessage = MessageQueue.poll(1, TimeUnit.SECONDS);
+                if (clientMessage == null && !isConnectionAlive()) {
+                    throw new SocketIsDeadException("Attempted to receive a message form a dead socket.");
                 }
-
+            } catch (InterruptedException e) {
                 this.close();
                 throw new SocketIsDeadException("Attempted to receive a message form a dead socket.");
             }
