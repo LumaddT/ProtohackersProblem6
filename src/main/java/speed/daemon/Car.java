@@ -36,6 +36,10 @@ public class Car {
     }
 
     public Ticket checkForTicket(long timestamp, int road, int mile, int limit) {
+        if (!Sightings.containsKey(road)) {
+            Sightings.put(road, new HashMap<>());
+        }
+
         Set<Ticket> potentialTickets = new HashSet<>();
 
         Map<Long, Integer> roadSightings = Sightings.get(road);
