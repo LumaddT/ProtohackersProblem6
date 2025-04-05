@@ -3,6 +3,7 @@ package speed.daemon.devices;
 import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import speed.daemon.IslandManager;
 import speed.daemon.MessageTypes;
 import speed.daemon.clientMessages.IAmDispatcher;
 import speed.daemon.codex.SocketHolder;
@@ -51,5 +52,6 @@ public class Dispatcher {
 
     public void disconnect() {
         SocketHolder.close();
+        IslandManager.remove(this);
     }
 }

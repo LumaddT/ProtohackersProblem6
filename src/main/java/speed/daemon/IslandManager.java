@@ -87,6 +87,16 @@ public class IslandManager {
         }
     }
 
+    public static void remove(Camera camera) {
+        Cameras.get(camera.getRoad()).remove(camera);
+    }
+
+    public static void remove(Dispatcher dispatcher) {
+        for (int road : dispatcher.getRoads()) {
+            Dispatchers.get(road).remove(dispatcher);
+        }
+    }
+
     public static void disconnectAll() {
         Cameras.values().stream()
                 .flatMap(Set::stream)

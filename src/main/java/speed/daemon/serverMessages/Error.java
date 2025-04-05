@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @ToString
-public class Error implements ServerMessage {
+public class Error {
     private static final Logger logger = LogManager.getLogger();
 
     public static final Map<ErrorTypes, byte[]> ERRORS;
@@ -38,7 +38,6 @@ public class Error implements ServerMessage {
         Message = errorType.ErrorMessage;
     }
 
-    @Override
     public byte[] encode() throws ImpossibleEncodingException {
         byte[] encoded = new byte[Message.length() + 2];
         encoded[0] = MessageTypes.ERROR.getFlag();

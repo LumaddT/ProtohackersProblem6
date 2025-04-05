@@ -9,7 +9,7 @@ import speed.daemon.exceptions.ImpossibleEncodingException;
 
 @Builder
 @ToString
-public class Ticket implements ServerMessage {
+public class Ticket {
     private final String Plate;
     private final int Road;
     private final int Mile1;
@@ -20,7 +20,6 @@ public class Ticket implements ServerMessage {
     private final long Timestamp2;
     private final int Speed;
 
-    @Override
     public byte[] encode() throws ImpossibleEncodingException {
         byte[] encoded = new byte[Plate.length() + 18];
         encoded[0] = MessageTypes.TICKET.getFlag();

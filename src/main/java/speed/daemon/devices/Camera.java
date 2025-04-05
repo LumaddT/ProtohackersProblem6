@@ -59,5 +59,6 @@ public class Camera {
 
     public void disconnect() {
         SocketHolder.close();
+        IslandManager.remove(this);
     }
 }
