@@ -235,7 +235,7 @@ public class SocketHolder {
     }
 
     public void close() {
-        logger.debug("Closing socket {}.", this.hashCode());
+        logger.info("Closing socket {}.", this.hashCode());
         ConnectionAlive = false;
 
         try {
