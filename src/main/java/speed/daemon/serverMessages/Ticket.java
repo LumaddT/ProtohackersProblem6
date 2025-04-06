@@ -10,6 +10,9 @@ import speed.daemon.exceptions.ImpossibleEncodingException;
 @Builder
 @ToString
 public class Ticket implements ServerMessage {
+    @Getter
+    private final MessageTypes MessageType = MessageTypes.TICKET;
+
     private final String Plate;
     private final int Road;
     private final int Mile1;

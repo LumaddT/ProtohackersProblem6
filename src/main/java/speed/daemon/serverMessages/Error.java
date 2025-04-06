@@ -1,5 +1,6 @@
 package speed.daemon.serverMessages;
 
+import lombok.Getter;
 import lombok.ToString;
 import speed.daemon.MessageTypes;
 import speed.daemon.MessageEncoder;
@@ -11,6 +12,9 @@ import java.util.Map;
 
 @ToString
 public class Error implements ServerMessage {
+    @Getter
+    private final MessageTypes MessageType = MessageTypes.ERROR;
+
     public static final Map<ErrorTypes, Error> ERRORS;
 
     private final String Message;

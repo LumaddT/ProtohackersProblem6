@@ -194,7 +194,11 @@ public class SocketHolder {
 
         try {
             OutputStream.write(encodedMessage);
-            logger.info("Sent message {} in socket {}.", serverMessage, this.hashCode());
+            if (serverMessage.getMessageType() == MessageTypes.HEARTBEAT) {
+                logger.debug("Sent message {} in socket {}.", serverMessage, this.hashCode());
+            } else {
+                logger.info("Sent message {} in socket {}.", serverMessage, this.hashCode());
+            }
         } catch (IOException e) {
             this.close();
         }
