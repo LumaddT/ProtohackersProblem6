@@ -25,7 +25,7 @@ public class InitialHandler {
             case I_AM_CAMERA -> IslandManager.addCamera(socketHolder);
             case I_AM_DISPATCHER -> IslandManager.addDispatcher(socketHolder);
             default ->
-                    logger.warn("Received illegal message {} as first message from socket.", initialMessage.toString());
+                    logger.warn("Received illegal message {} as first message from socket {}.", initialMessage.toString(), socketHolder.hashCode());
         }
     }
 }

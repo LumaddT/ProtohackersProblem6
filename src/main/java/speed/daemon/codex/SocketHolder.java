@@ -42,7 +42,7 @@ public class SocketHolder {
     private final ClientMessage InitialMessage;
 
     @Getter
-    private boolean ConnectionAlive = false;
+    private volatile boolean ConnectionAlive = false;
 
     public SocketHolder(Socket socket) {
         Socket = socket;
@@ -72,7 +72,7 @@ public class SocketHolder {
             try {
                 initialMessage = MessageReceiver.receiveClientMessage(InputStream, Set.of(
                         MessageTypes.I_AM_CAMERA, MessageTypes.I_AM_DISPATCHER, MessageTypes.WANT_HEARTBEAT));
-                logger.info("Received {} in socket {} as initial message.", initialMessage.toString(), this.hashCode());
+                logger.info("(Initial) Received {} in socket {}.", initialMessage.toString(), this.hashCode());
             } catch (ExpectedMoreBytesException e) {
                 this.sendError(Error.ErrorTypes.EXPECTED_MORE_BYTES);
 
