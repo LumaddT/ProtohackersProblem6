@@ -93,7 +93,7 @@ public class SocketHolder {
             break;
         }
 
-        if (initialMessage == null) {
+        if (initialMessage == null || !ConnectionAlive) {
             InitialMessage = null;
             this.close();
             return;
@@ -203,6 +203,7 @@ public class SocketHolder {
             logger.debug("Received 2 WantHeartbeat messages from the came client.");
             this.sendError(Error.ErrorTypes.DOUBLE_HEARTBEAT_ERROR);
             this.close();
+            return;
         }
 
         SendingHeartbeat = true;
@@ -232,6 +233,8 @@ public class SocketHolder {
     }
 
     public void close() {
+        ConnectionAlive = false;
+
         try {
             Socket.shutdownInput();
             Socket.shutdownOutput();
@@ -240,7 +243,5 @@ public class SocketHolder {
         } catch (IOException ex) {
             logger.debug("An error occurred while attempting to close this Socket.");
         }
-
-        ConnectionAlive = false;
     }
 }

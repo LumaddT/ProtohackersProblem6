@@ -17,6 +17,7 @@ public class InitialHandler {
 
         if (!socketHolder.isConnectionAlive()) {
             logger.debug("Client socket died before any message could be received.");
+            return;
         }
 
         ClientMessage initialMessage = socketHolder.getInitialMessage();
