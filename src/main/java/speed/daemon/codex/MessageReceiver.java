@@ -19,13 +19,13 @@ public class MessageReceiver {
 
         MessageTypes messageType = MessageTypes.getType((byte) firstByte);
 
-        if (messageType != MessageTypes.WANT_HEARTBEAT && !expectedMessageTypes.contains(messageType)) {
+        if (messageType == null || !expectedMessageTypes.contains(messageType)) {
             String exceptionMessage = "Expected message with type any of {" +
                     expectedMessageTypes.stream()
                             .map(MessageTypes::name)
                             .collect(Collectors.joining(", ")) +
                     "} but found \"" +
-                    messageType.name() +
+                    (messageType != null ? messageType.name() : "0x%02X".formatted(firstByte)) +
                     "\" instead.";
 
             throw new UnexpectedMessageTypeException(exceptionMessage);
