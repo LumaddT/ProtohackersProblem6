@@ -3,7 +3,7 @@ package speed.daemon.serverMessages;
 import lombok.Getter;
 import lombok.ToString;
 import speed.daemon.MessageTypes;
-import speed.daemon.MessageEncoder;
+import speed.daemon.codex.MessageEncoder;
 import speed.daemon.exceptions.ImpossibleEncodingException;
 
 import java.util.Collections;

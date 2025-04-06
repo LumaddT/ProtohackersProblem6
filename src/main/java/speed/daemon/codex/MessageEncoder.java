@@ -1,4 +1,4 @@
-package speed.daemon;
+package speed.daemon.codex;
 
 import speed.daemon.exceptions.ImpossibleEncodingException;
 

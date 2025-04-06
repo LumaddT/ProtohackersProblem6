@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 import speed.daemon.MessageTypes;
-import speed.daemon.MessageEncoder;
+import speed.daemon.codex.MessageEncoder;
 import speed.daemon.exceptions.ImpossibleEncodingException;
 
 @Builder

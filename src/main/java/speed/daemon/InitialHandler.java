@@ -3,7 +3,6 @@ package speed.daemon;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import speed.daemon.clientMessages.ClientMessage;
-import speed.daemon.codex.SocketHolder;
 
 import java.net.Socket;
 

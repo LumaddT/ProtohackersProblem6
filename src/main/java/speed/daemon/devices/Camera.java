@@ -6,7 +6,7 @@ import speed.daemon.MessageTypes;
 import speed.daemon.clientMessages.ClientMessage;
 import speed.daemon.clientMessages.IAmCamera;
 import speed.daemon.clientMessages.Plate;
-import speed.daemon.codex.SocketHolder;
+import speed.daemon.SocketHolder;
 import speed.daemon.exceptions.SocketIsDeadException;
 import speed.daemon.serverMessages.Error;
 

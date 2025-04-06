@@ -1,11 +1,11 @@
-package speed.daemon.codex;
+package speed.daemon;
 
 import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import speed.daemon.MessageTypes;
 import speed.daemon.clientMessages.ClientMessage;
 import speed.daemon.clientMessages.WantHeartbeat;
+import speed.daemon.codex.MessageReceiver;
 import speed.daemon.exceptions.ExpectedMoreBytesException;
 import speed.daemon.exceptions.ImpossibleEncodingException;
 import speed.daemon.exceptions.SocketIsDeadException;

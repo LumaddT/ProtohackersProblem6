@@ -4,7 +4,7 @@ import lombok.Getter;
 import speed.daemon.IslandManager;
 import speed.daemon.MessageTypes;
 import speed.daemon.clientMessages.IAmDispatcher;
-import speed.daemon.codex.SocketHolder;
+import speed.daemon.SocketHolder;
 import speed.daemon.exceptions.SocketIsDeadException;
 import speed.daemon.serverMessages.Ticket;
 

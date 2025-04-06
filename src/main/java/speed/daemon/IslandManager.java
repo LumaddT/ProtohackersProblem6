@@ -1,7 +1,6 @@
 package speed.daemon;
 
 import speed.daemon.clientMessages.Plate;
-import speed.daemon.codex.SocketHolder;
 import speed.daemon.devices.Camera;
 import speed.daemon.devices.Dispatcher;
 import speed.daemon.serverMessages.Error;
