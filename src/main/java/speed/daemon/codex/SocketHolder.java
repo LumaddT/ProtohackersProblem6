@@ -134,9 +134,9 @@ public class SocketHolder {
 
             if (clientMessage.getMessageType() == MessageTypes.WANT_HEARTBEAT) {
                 manageHeartbeat(clientMessage);
+            } else {
+                MessageQueue.add(clientMessage);
             }
-
-            MessageQueue.add(clientMessage);
         }
     }
 
