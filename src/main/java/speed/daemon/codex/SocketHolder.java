@@ -142,8 +142,10 @@ public class SocketHolder {
         while (true) {
             try {
                 ClientMessage clientMessage = MessageQueue.poll(1, TimeUnit.SECONDS);
-                if (clientMessage == null && !isConnectionAlive()) {
+                if (!isConnectionAlive()) {
                     throw new SocketIsDeadException("Attempted to receive a message form a dead socket.");
+                } else if (clientMessage != null) {
+                    return clientMessage;
                 }
             } catch (InterruptedException e) {
                 this.close();
