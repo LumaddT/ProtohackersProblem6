@@ -75,12 +75,12 @@ public class SocketHolder {
                         MessageTypes.I_AM_CAMERA, MessageTypes.I_AM_DISPATCHER, MessageTypes.WANT_HEARTBEAT));
                 logger.info("(Initial) Received {} in socket {}.", initialMessage.toString(), this.hashCode());
             } catch (ExpectedMoreBytesException e) {
-                logger.info("{} Socket {}", e.getMessage(), this.hashCode());
+                logger.info("(Initial ExpectedMoreBytesException) {} Socket {}", e.getMessage(), this.hashCode());
                 this.sendError(Error.ErrorTypes.EXPECTED_MORE_BYTES);
 
                 break;
             } catch (UnexpectedMessageTypeException e) {
-                logger.info("{} Socket {}", e.getMessage(), this.hashCode());
+                logger.info("(Initial UnexpectedMessageTypeException) {} Socket {}", e.getMessage(), this.hashCode());
                 this.sendError(Error.ErrorTypes.UNEXPECTED_MESSAGE_TYPE);
 
                 break;
@@ -120,13 +120,13 @@ public class SocketHolder {
                 clientMessage = MessageReceiver.receiveClientMessage(InputStream, ExpectedMessageTypes);
                 logger.info("Received {} in socket {}.", clientMessage.toString(), this.hashCode());
             } catch (ExpectedMoreBytesException e) {
-                logger.info("{} Socket {}", e.getMessage(), this.hashCode());
+                logger.info("(ExpectedMoreBytesException) {} Socket {}", e.getMessage(), this.hashCode());
                 this.sendError(Error.ErrorTypes.EXPECTED_MORE_BYTES);
 
                 this.close();
                 return;
             } catch (UnexpectedMessageTypeException e) {
-                logger.info("{} Socket {}", e.getMessage(), this.hashCode());
+                logger.info("(UnexpectedMessageTypeException) {} Socket {}", e.getMessage(), this.hashCode());
                 this.sendError(Error.ErrorTypes.UNEXPECTED_MESSAGE_TYPE);
 
                 this.close();
@@ -172,13 +172,11 @@ public class SocketHolder {
     }
 
     public void sendError(Error.ErrorTypes errorType) {
-        new Thread(() -> {
-            try {
-                this.sendMessage(Error.ERRORS.get(errorType));
-            } catch (SocketIsDeadException e) {
-                logger.debug("Attempted to send an Error message of type \"{}\" to a dead socket.", errorType.name());
-            }
-        }).start();
+        try {
+            this.sendMessage(Error.ERRORS.get(errorType));
+        } catch (SocketIsDeadException e) {
+            logger.debug("Attempted to send an Error message of type \"{}\" to a dead socket.", errorType.name());
+        }
     }
 
     public synchronized void sendMessage(ServerMessage serverMessage) throws SocketIsDeadException {
