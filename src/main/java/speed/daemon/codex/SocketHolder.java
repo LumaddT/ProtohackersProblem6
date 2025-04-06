@@ -72,6 +72,7 @@ public class SocketHolder {
             try {
                 initialMessage = MessageReceiver.receiveClientMessage(InputStream, Set.of(
                         MessageTypes.I_AM_CAMERA, MessageTypes.I_AM_DISPATCHER, MessageTypes.WANT_HEARTBEAT));
+                logger.info("Received {} in socket {} as initial message.", initialMessage.toString(), this.hashCode());
             } catch (ExpectedMoreBytesException e) {
                 this.sendError(Error.ErrorTypes.EXPECTED_MORE_BYTES);
 
@@ -114,6 +115,7 @@ public class SocketHolder {
 
             try {
                 clientMessage = MessageReceiver.receiveClientMessage(InputStream, ExpectedMessageTypes);
+                logger.info("Received {} in socket {}.", clientMessage.toString(), this.hashCode());
             } catch (ExpectedMoreBytesException e) {
                 this.sendError(Error.ErrorTypes.EXPECTED_MORE_BYTES);
 
@@ -186,7 +188,7 @@ public class SocketHolder {
 
         try {
             OutputStream.write(encodedMessage);
-            logger.info("Sent message {}.", serverMessage);
+            logger.info("Sent message {} in socket {}.", serverMessage, this.hashCode());
         } catch (IOException e) {
             this.close();
         }
