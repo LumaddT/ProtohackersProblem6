@@ -1,8 +1,6 @@
 package speed.daemon.serverMessages;
 
 import lombok.ToString;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import speed.daemon.MessageTypes;
 import speed.daemon.MessageEncoder;
 import speed.daemon.exceptions.ImpossibleEncodingException;
@@ -12,23 +10,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 @ToString
-public class Error {
-    private static final Logger logger = LogManager.getLogger();
-
-    public static final Map<ErrorTypes, byte[]> ERRORS;
+public class Error implements ServerMessage {
+    public static final Map<ErrorTypes, Error> ERRORS;
 
     private final String Message;
 
     static {
-        Map<ErrorTypes, byte[]> errors = new HashMap<>();
+        Map<ErrorTypes, Error> errors = new HashMap<>();
 
         for (ErrorTypes errorType : ErrorTypes.values()) {
-            try {
-                errors.put(errorType, new Error(errorType).encode());
-            } catch (ImpossibleEncodingException e) {
-                logger.fatal("An unrecoverable error occurred while encoding an error message.");
-                throw new RuntimeException(e);
-            }
+            errors.put(errorType, new Error(errorType));
         }
 
         ERRORS = Collections.unmodifiableMap(errors);
@@ -38,6 +29,7 @@ public class Error {
         Message = errorType.ErrorMessage;
     }
 
+    @Override
     public byte[] encode() throws ImpossibleEncodingException {
         byte[] encoded = new byte[Message.length() + 2];
         encoded[0] = MessageTypes.ERROR.getFlag();

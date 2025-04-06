@@ -1,13 +1,10 @@
 package speed.daemon.devices;
 
 import lombok.Getter;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import speed.daemon.IslandManager;
 import speed.daemon.MessageTypes;
 import speed.daemon.clientMessages.IAmDispatcher;
 import speed.daemon.codex.SocketHolder;
-import speed.daemon.exceptions.ImpossibleEncodingException;
 import speed.daemon.exceptions.SocketIsDeadException;
 import speed.daemon.serverMessages.Ticket;
 
@@ -16,8 +13,6 @@ import java.util.Set;
 
 @Getter
 public class Dispatcher {
-    private static final Logger logger = LogManager.getLogger();
-
     private final SocketHolder SocketHolder;
     private final Set<Integer> Roads;
 
@@ -34,17 +29,8 @@ public class Dispatcher {
     }
 
     public void sendTicket(Ticket ticket) {
-        byte[] encodedTicket;
         try {
-            encodedTicket = ticket.encode();
-        } catch (ImpossibleEncodingException e) {
-            logger.fatal("An unrecoverable error occurred while encoding an ticket message.");
-
-            throw new RuntimeException(e);
-        }
-
-        try {
-            SocketHolder.sendMessage(encodedTicket);
+            SocketHolder.sendMessage(ticket);
         } catch (SocketIsDeadException e) {
             this.disconnect();
         }

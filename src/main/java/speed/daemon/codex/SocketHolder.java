@@ -7,10 +7,12 @@ import speed.daemon.MessageTypes;
 import speed.daemon.clientMessages.ClientMessage;
 import speed.daemon.clientMessages.WantHeartbeat;
 import speed.daemon.exceptions.ExpectedMoreBytesException;
+import speed.daemon.exceptions.ImpossibleEncodingException;
 import speed.daemon.exceptions.SocketIsDeadException;
 import speed.daemon.exceptions.UnexpectedMessageTypeException;
 import speed.daemon.serverMessages.Error;
 import speed.daemon.serverMessages.Heartbeat;
+import speed.daemon.serverMessages.ServerMessage;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -169,13 +171,22 @@ public class SocketHolder {
         }
     }
 
-    public synchronized void sendMessage(byte[] encodedMessage) throws SocketIsDeadException {
+    public synchronized void sendMessage(ServerMessage serverMessage) throws SocketIsDeadException {
         if (!isConnectionAlive()) {
             throw new SocketIsDeadException("Attempted to send message over dead socket.");
         }
 
+        byte[] encodedMessage;
+        try {
+            encodedMessage = serverMessage.encode();
+        } catch (ImpossibleEncodingException e) {
+            logger.error("Attempted to send {} but it cannot be encoded.", serverMessage.toString());
+            return;
+        }
+
         try {
             OutputStream.write(encodedMessage);
+            logger.info("Sent message {}.", serverMessage);
         } catch (IOException e) {
             this.close();
         }
@@ -209,7 +220,7 @@ public class SocketHolder {
             }
 
             try {
-                this.sendMessage(Heartbeat.ENCODED);
+                this.sendMessage(Heartbeat.INSTANCE);
             } catch (SocketIsDeadException e) {
                 return;
             }

@@ -1,8 +1,6 @@
 package speed.daemon.devices;
 
 import lombok.Getter;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import speed.daemon.IslandManager;
 import speed.daemon.MessageTypes;
 import speed.daemon.clientMessages.ClientMessage;
@@ -14,8 +12,6 @@ import speed.daemon.serverMessages.Error;
 
 @Getter
 public class Camera {
-    private static final Logger logger = LogManager.getLogger();
-
     private final SocketHolder SocketHolder;
     private final int Road;
     private final int Mile;
