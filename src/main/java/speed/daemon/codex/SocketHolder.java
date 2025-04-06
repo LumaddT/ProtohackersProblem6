@@ -75,12 +75,12 @@ public class SocketHolder {
                         MessageTypes.I_AM_CAMERA, MessageTypes.I_AM_DISPATCHER, MessageTypes.WANT_HEARTBEAT));
                 logger.info("(Initial) Received {} in socket {}.", initialMessage.toString(), this.hashCode());
             } catch (ExpectedMoreBytesException e) {
-                logger.info("(Initial ExpectedMoreBytesException) {} Socket {}", e.getMessage(), this.hashCode());
+                logger.debug("(Initial ExpectedMoreBytesException) {} Socket {}", e.getMessage(), this.hashCode());
                 this.sendError(Error.ErrorTypes.EXPECTED_MORE_BYTES);
 
                 break;
             } catch (UnexpectedMessageTypeException e) {
-                logger.info("(Initial UnexpectedMessageTypeException) {} Socket {}", e.getMessage(), this.hashCode());
+                logger.debug("(Initial UnexpectedMessageTypeException) {} Socket {}", e.getMessage(), this.hashCode());
                 this.sendError(Error.ErrorTypes.UNEXPECTED_MESSAGE_TYPE);
 
                 break;
@@ -118,15 +118,15 @@ public class SocketHolder {
 
             try {
                 clientMessage = MessageReceiver.receiveClientMessage(InputStream, ExpectedMessageTypes);
-                logger.info("Received {} in socket {}.", clientMessage.toString(), this.hashCode());
+                logger.debug("Received {} in socket {}.", clientMessage.toString(), this.hashCode());
             } catch (ExpectedMoreBytesException e) {
-                logger.info("(ExpectedMoreBytesException) {} Socket {}", e.getMessage(), this.hashCode());
+                logger.debug("(ExpectedMoreBytesException) {} Socket {}", e.getMessage(), this.hashCode());
                 this.sendError(Error.ErrorTypes.EXPECTED_MORE_BYTES);
 
                 this.close();
                 return;
             } catch (UnexpectedMessageTypeException e) {
-                logger.info("(UnexpectedMessageTypeException) {} Socket {}", e.getMessage(), this.hashCode());
+                logger.debug("(UnexpectedMessageTypeException) {} Socket {}", e.getMessage(), this.hashCode());
                 this.sendError(Error.ErrorTypes.UNEXPECTED_MESSAGE_TYPE);
 
                 this.close();
@@ -204,7 +204,7 @@ public class SocketHolder {
         WantHeartbeat wantHeartbeat = (WantHeartbeat) clientMessage;
 
         if (SendingHeartbeat) {
-            logger.info("Received 2 WantHeartbeat messages from the came client.");
+            logger.debug("Received 2 WantHeartbeat messages from the came client.");
             this.sendError(Error.ErrorTypes.DOUBLE_HEARTBEAT_ERROR);
             this.close();
             return;
