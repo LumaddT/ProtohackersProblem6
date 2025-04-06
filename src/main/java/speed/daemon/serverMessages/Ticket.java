@@ -43,7 +43,7 @@ public class Ticket implements ServerMessage {
         System.arraycopy(encodedTimestamp1, 0, encoded, destinationIndex, encodedTimestamp1.length);
         destinationIndex += encodedTimestamp1.length;
 
-        byte[] encodedMile2 = MessageEncoder.encodeU16(Mile1);
+        byte[] encodedMile2 = MessageEncoder.encodeU16(Mile2);
         System.arraycopy(encodedMile2, 0, encoded, destinationIndex, encodedMile2.length);
         destinationIndex += encodedMile2.length;
 
