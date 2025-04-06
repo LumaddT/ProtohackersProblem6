@@ -21,11 +21,11 @@ public class InitialHandler {
 
         ClientMessage initialMessage = socketHolder.getInitialMessage();
 
-        logger.info("Received {} as first message from socket.", initialMessage.toString());
-
         switch (initialMessage.getMessageType()) {
             case I_AM_CAMERA -> IslandManager.addCamera(socketHolder);
             case I_AM_DISPATCHER -> IslandManager.addDispatcher(socketHolder);
+            default ->
+                    logger.warn("Received illegal message {} as first message from socket.", initialMessage.toString());
         }
     }
 }

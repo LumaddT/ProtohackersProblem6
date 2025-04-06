@@ -47,8 +47,6 @@ public class Camera {
 
             Plate plate = (Plate) clientMessage;
 
-            logger.debug("Received plate \"{}\", Road: {}, Mile: {}", plate.toString(), Road, Mile);
-
             IslandManager.reportPlate(plate, Road, Mile);
         }
     }

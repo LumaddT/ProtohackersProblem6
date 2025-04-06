@@ -1,5 +1,7 @@
 package speed.daemon.codex;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import speed.daemon.MessageTypes;
 import speed.daemon.clientMessages.*;
 import speed.daemon.exceptions.ExpectedMoreBytesException;
@@ -14,6 +16,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class MessageReceiver {
+    private static final Logger logger = LogManager.getLogger();
+
     public static ClientMessage receiveClientMessage(InputStream inputStream, Collection<MessageTypes> expectedMessageTypes) throws UnexpectedMessageTypeException, ExpectedMoreBytesException, IOException {
         int firstByte = receiveByte(inputStream);
 
@@ -31,22 +35,18 @@ public class MessageReceiver {
             throw new UnexpectedMessageTypeException(exceptionMessage);
         }
 
-        switch (messageType) {
-            case I_AM_CAMERA -> {
-                return receiveIAmCamera(inputStream);
-            }
-            case I_AM_DISPATCHER -> {
-                return receiveIAmDispatcher(inputStream);
-            }
-            case PLATE -> {
-                return receivePlate(inputStream);
-            }
-            case WANT_HEARTBEAT -> {
-                return receiveWantHeartbeat(inputStream);
-            }
+        ClientMessage clientMessage = switch (messageType) {
+            case I_AM_CAMERA -> receiveIAmCamera(inputStream);
+            case I_AM_DISPATCHER -> receiveIAmDispatcher(inputStream);
+            case PLATE -> receivePlate(inputStream);
+            case WANT_HEARTBEAT -> receiveWantHeartbeat(inputStream);
             default ->
                     throw new UnexpectedMessageTypeException("Expected a client message type but found \"%s\" instead.".formatted(messageType.name()));
-        }
+        };
+
+        logger.info("Received {}.", clientMessage.toString());
+
+        return clientMessage;
     }
 
     private static Plate receivePlate(InputStream inputStream) throws IOException, ExpectedMoreBytesException {
