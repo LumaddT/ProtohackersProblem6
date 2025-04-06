@@ -166,11 +166,13 @@ public class SocketHolder {
     }
 
     public void sendError(Error.ErrorTypes errorType) {
-        try {
-            this.sendMessage(Error.ERRORS.get(errorType));
-        } catch (SocketIsDeadException e) {
-            logger.debug("Attempted to send an Error message of type \"{}\" to a dead socket.", errorType.name());
-        }
+        new Thread(() -> {
+            try {
+                this.sendMessage(Error.ERRORS.get(errorType));
+            } catch (SocketIsDeadException e) {
+                logger.debug("Attempted to send an Error message of type \"{}\" to a dead socket.", errorType.name());
+            }
+        }).start();
     }
 
     public synchronized void sendMessage(ServerMessage serverMessage) throws SocketIsDeadException {
