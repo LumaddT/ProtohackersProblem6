@@ -75,10 +75,12 @@ public class SocketHolder {
                         MessageTypes.I_AM_CAMERA, MessageTypes.I_AM_DISPATCHER, MessageTypes.WANT_HEARTBEAT));
                 logger.info("(Initial) Received {} in socket {}.", initialMessage.toString(), this.hashCode());
             } catch (ExpectedMoreBytesException e) {
+                logger.info(e.getMessage());
                 this.sendError(Error.ErrorTypes.EXPECTED_MORE_BYTES);
 
                 break;
             } catch (UnexpectedMessageTypeException e) {
+                logger.info(e.getMessage());
                 this.sendError(Error.ErrorTypes.UNEXPECTED_MESSAGE_TYPE);
 
                 break;
@@ -118,11 +120,13 @@ public class SocketHolder {
                 clientMessage = MessageReceiver.receiveClientMessage(InputStream, ExpectedMessageTypes);
                 logger.info("Received {} in socket {}.", clientMessage.toString(), this.hashCode());
             } catch (ExpectedMoreBytesException e) {
+                logger.info(e.getMessage());
                 this.sendError(Error.ErrorTypes.EXPECTED_MORE_BYTES);
 
                 this.close();
                 return;
             } catch (UnexpectedMessageTypeException e) {
+                logger.info(e.getMessage());
                 this.sendError(Error.ErrorTypes.UNEXPECTED_MESSAGE_TYPE);
 
                 this.close();
@@ -202,7 +206,7 @@ public class SocketHolder {
         WantHeartbeat wantHeartbeat = (WantHeartbeat) clientMessage;
 
         if (SendingHeartbeat) {
-            logger.debug("Received 2 WantHeartbeat messages from the came client.");
+            logger.info("Received 2 WantHeartbeat messages from the came client.");
             this.sendError(Error.ErrorTypes.DOUBLE_HEARTBEAT_ERROR);
             this.close();
             return;
