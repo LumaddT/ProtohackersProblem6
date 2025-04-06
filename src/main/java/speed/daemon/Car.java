@@ -12,7 +12,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 @RequiredArgsConstructor
 public class Car {
-    private static final double LIMIT_TOLERANCE = 0.5;
+    private static final double LIMIT_TOLERANCE = 0.25;
 
     private final String PlateNumber;
     private final Map<Integer, Map<Long, Integer>> Sightings = new HashMap<>();
@@ -52,7 +52,7 @@ public class Car {
 
             double averageSpeed = ((double) deltaDistance) / deltaTimeHours;
 
-            if (averageSpeed > limit) {
+            if (averageSpeed > limit + LIMIT_TOLERANCE) {
                 potentialTickets.add(Ticket.builder()
                         .Plate(this.PlateNumber)
                         .Road(road)
