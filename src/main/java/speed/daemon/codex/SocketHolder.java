@@ -70,6 +70,7 @@ public class SocketHolder {
 
         while (true) {
             try {
+                initialMessage = null;
                 initialMessage = MessageReceiver.receiveClientMessage(InputStream, Set.of(
                         MessageTypes.I_AM_CAMERA, MessageTypes.I_AM_DISPATCHER, MessageTypes.WANT_HEARTBEAT));
                 logger.info("(Initial) Received {} in socket {}.", initialMessage.toString(), this.hashCode());
@@ -149,6 +150,7 @@ public class SocketHolder {
                 if (!isConnectionAlive()) {
                     throw new SocketIsDeadException("Attempted to receive a message form a dead socket.");
                 } else if (clientMessage != null) {
+                    logger.info("Retrieved {} from MessageQueue in socket {}.", clientMessage.toString(), this.hashCode());
                     return clientMessage;
                 }
             } catch (InterruptedException e) {
